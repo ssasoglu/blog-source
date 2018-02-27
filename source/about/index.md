@@ -1,0 +1,12 @@
+---
+title: About
+date: 2018-02-24 10:00:00
+tags:
+- about
+---
+
+# Thanks For Dropping By
+
+I am a software developer living in the Netherlands. I love tinkering in the digital world and I like writing about stuff that I find useful.
+
+If you want to get in touch, please reach me through <a class="icon" target="_blank" href="https://tr.linkedin.com/in/ssasoglu"><i class="fa fa-linkedin"></i></a>, <a class="icon" target="_blank" href="https://twitter.com/ssasoglu"><i class="fa fa-twitter"></i></a> or <a class="icon" target="_blank" href="http://github.com/nerdomancer"><i class="fa fa-github"></i></a>. 
