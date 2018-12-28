@@ -1,5 +1,5 @@
 ---
-title: Build Pattern With Mandatory Calls
+title: Builder Pattern With Mandatory Calls
 date: 2018-12-18 15:02:17
 tags:
 - design patterns
