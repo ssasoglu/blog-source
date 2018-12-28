@@ -12,24 +12,40 @@ tags:
 
 ## Builder Pattern
 
-Builder pattern is one of the creational design patterns which is pretty popular. Almost any code base uses builder pattern somewhere along the line. In this post, I would like to share a different approach to this pattern that eliminates error prone usages with high readability.
+Builder pattern is one of the creational design patterns which is used in almost all code bases. In this post, I would like to share a different approach to this popular pattern which eliminates error prone usages with high readability.
 
-In our current project, we are also heavily using builder pattern. In many cases, we have to create the same object type in a flexible way with some optional values. In a recent requirement we needed to build an object with a number of mandatory and optional field values together.
+First things first, let's take a look at the [intent of builder pattern](https://en.wikipedia.org/wiki/Builder_pattern)
 
-In a well defined builder pattern implementation, resulting object when the `Build()` method is called should always be valid and ready to use. 
+> The intent of the Builder design pattern is to separate the construction of a complex object from its representation.
+
+And this intention is to [solve problems like:](https://en.wikipedia.org/wiki/Builder_pattern)
+
+> * How can a class (the same construction process) create different representations of a complex object?
+> * How can a class that includes creating a complex object be simplified?
+
+In short, we can use builder pattern when we want to create complex objects with ease. The properties of the complex object can also vary depending on usage of the builder class.
+
+## How do we use it?
+
+In our current project, we are also using builder pattern. In many cases, we have to create the same object type in a flexible way with some optional values. Builder classes can achieve these constructions with ease and the final code is highly readable.
 
 ## Challenge
 
-General approach to dictate mandatory fields is to require them in the constructor of the builder class. On the other hand, in the case of too many mandatory fields, readability of the code decreases significantly and it becomes more difficult track the mandatory parameters. Achieving this functionality and keeping the builder interface developer-friendly is kind of challenging. This post discusses over an approach to solve this challenge.
+To fulfill a recent requirement we needed to build an object with a number of mandatory and optional field values together. Optional fields were not a problem, but the mandatory fields had to be initialized when the resulting object is constructed. This is one of the [weak points of builder pattern.](https://en.wikipedia.org/wiki/Builder_pattern)
 
-To elaborate further on the topic, here are the options that are generally used when a mix of mandatory and optional fields are used through builder pattern:
+> Disadvantages of the Builder pattern include:
+> * Data members of class aren't guaranteed to be initialized.
+
+But in our case, anytime the `Build()` method is called from the builder, we should get back an object which has all the mandatory fields initialized. Handling mandatory fields and keeping the code readable can be a difficult task.
+
+General approach to dictate mandatory fields is to require them in the constructor of the builder class. On the other hand, in the case of too many mandatory fields, readability of the code decreases significantly and it becomes more difficult track the mandatory parameters. Achieving this functionality and keeping the builder interface developer-friendly is kind of challenging. This post discusses over an approach to solve this challenge. To elaborate further on the topic, here are the options that are generally used when a mix of mandatory and optional fields are used through builder pattern:
 
 * The recommended way with builder pattern is to add all your mandatory parameters to the constructor of the class and keep optional parameters in separate methods. This option is viable if you do not have too many mandatory parameters. Otherwise it can decrease readability of the code.
 * Use a combination of factory class that would default mandatory parameters per use case. This option is viable when you don't have more than 2-3 build cases for the resulting object or some parameters can be defaulted.
 * Use several builders and combine the results in the end in object constructor. Each builder will create a part of the final result and they will be combined with a final builder to rule them all. This option can decrease code readability.
-* Use builders with mandatory calls and chain them (chain builders or step builders).
+* Use builders with mandatory method calls and chain them (chain builders or step builders).
 
-Decision was to use number 4 which is the main idea to write this blog post and it was fun to brainstorm on it. I have never seen a similar implementation before we actually created it for our project. But before writing this blog post, I did some search on existing blogs and saw that there were some Java implementations for the same concept. They were called chain builders and step builders. You can see them from the references section.
+Decision was to use builders with mandatory method calls which is the main idea to write this blog post and it was fun to brainstorm on it. Basically the idea is to help the developer step by step while making sure that mandatory fields are initialized. I have never seen a similar implementation before we actually created it for our project. But before writing this blog post, I did some search on existing blogs and saw that there were some Java implementations for the same concept. They were called chain builders and step builders. You can see them from the references section.
 
 ## Show Me The Code
 
