@@ -51,13 +51,13 @@ Decision was to use builders with mandatory method calls which is the main idea 
 
 If you kept reading so far, it is great. This section is where the fun begins. I will try to give an example using an entity we use almost everyday. We will create a `Contact` just like the ones on your phone. Let's consider these requirements:
 
-In order to create a contact we will have mandatory fields:
+In order to create a valid contact, following fields will be mandatory:
 
 * Name
 * Surname
 * Phone number
 
-and a few optional fields:
+and we will have a few optional fields:
 
 * E-mail address
 * Address
@@ -156,7 +156,7 @@ public class BuilderConsumerClass
 
 This is what intellisense shows about our builder class with its current state:
 
-![intellisense-naive-implementation](/images/posts/2018/intellisense-naive.png)
+![intellisense-naive-implementation](/images/posts/2018/intellisense-naive-builder.png)
 
 So developers using this builder class can call any method in any order right now. The following call is a possible usage by a developer who does not know the requirements that we knew while implementing the builder class.
 
