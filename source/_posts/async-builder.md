@@ -7,8 +7,6 @@ tags:
 - async
 ---
 
-# Async Builder Pattern
-
 In my [previous blog post](https://www.selcuksasoglu.com/2018/12/18/builder-pattern-with-mandatory-calls/), I discussed an approach to solve a weak point of [builder pattern](https://en.wikipedia.org/wiki/Builder_pattern). In this blog post, I want to continue with a related discussion. The challenge that will be discussed over this blog post is "How can we make builder pattern async?" This is an issue we faced when we decided to migrate our current project to async to increase our throughput. We came to a decision moment, we would either delete the builder classes we had (there were many) or find a way to utilize them in async world.
 
 ## Challenge
@@ -68,7 +66,7 @@ public class ContactBuilder : IContactBuilder
 
 Of course in an implementation like this, you would not need an async operation, so let's spice it up a little bit.
 
-Imagine that you would like to construct your contacts in such a way that name and surname from should be queried from Linkedin profile, phone and address from Google Contacts. Let's inject 2 new dependencies to the builder class `ILinkedinRepository` and `IGoogleContactsRepository`. For brevity I will skip implementation of these classes, but let's assume that they will both have an option to read data through username.
+Imagine that you would like to construct your contacts in such a way that name and surname should be queried from Linkedin profile, phone and address from Google Contacts. Let's inject 2 new dependencies to the builder class `ILinkedinRepository` and `IGoogleContactsRepository`. For brevity I will skip implementation of these classes, but let's assume that they will both have an option to read data through username.
 
 ``` csharp
 public class ContactBuilder : IContactBuilder
@@ -106,7 +104,7 @@ public class ContactBuilder : IContactBuilder
 
 Please note that the concrete implementation always does a network operation and returns `this`.
 
-### Converting the Builder to Async
+## Converting the Builder to Async
 
 In async implementation of the same class returning `this` is not a possible option because we will need to return either a `Task` for void functions or `Task<T>` when we want to return a value. Even if we return `Task<IContactBuilder>` we will break the simplicity of builder pattern. Why? Because our builder and consumer would look like this:
 
@@ -158,7 +156,7 @@ Our consumer class:
     // Declarations here...
 
     var withNameBuilder = await builder.WithName();
-    var contact = await withNAmeBuilder.Build();
+    var contact = await withNameBuilder.Build();
   }
 }
 ```
@@ -225,18 +223,18 @@ public class ContactBuilder : IContactBuilder
 }
 ```
 
-Please note that with every builder method a new `Task` is being created to handle the operation and running thread just continues running. Each created `Task` is running immediately. In the build method, we are awaiting the created tasks.
+Please note that with every builder method a new `Task` is being created to handle the operation and running thread just continues execution. Each created `Task` is running immediately. In the build method, we are awaiting the created tasks.
 
 #### Pros
 
 - All tasks run in parallel
-- Running thread is not blocked
+- Main thread is not blocked
 - Faster
 
 #### Cons
 
 - Execution order of tasks cannot be known before hand
-- If one of the tasks fail, other scheduled tasks will still continue to work
+- If one task fails, other scheduled tasks will still continue to work
 
 ### 2- Builder with ordered `Func<Task>`
 
@@ -293,19 +291,19 @@ public class ContactBuilder : IContactBuilder
 }
 ```
 
-Please note that the builder queue is now of type `Func<Task>`. So when a new task is being created, it is not immediately running. We still need to invoce this `Func` to start operation. With this approach, we make sure that builder methods are run in the order they were created.
+Please note that the builder queue is now of type `Func<Task>`. So when a new task is being created, it is not immediately running. We still need to invoke this `Func` to start operation. With this approach, we make sure that builder methods are run in the order they were created.
 
 #### Pros
 
 - Order of execution is under control
-- Running thread is not blocked
-- If one of the tasks fail, remaining tasks won't execute.
+- Main thread is not blocked
+- If one task fails, remaining tasks won't execute.
 
 #### Cons
 
 - Slower. Tasks run in a waterfall fashion.
 
-### Builder with cancellable Tasks
+### 3- Builder with cancellable Tasks
 
 [Try here.](https://repl.it/@selcuks/builder-with-cancellable-tasks)
 
@@ -374,19 +372,21 @@ Please note the builder queue is here again of type `Task`. For each method in t
 #### Pros
 
 - Best of the both worlds from previous examples
-- Running thread is not blocked
+- Main thread is not blocked
 - Fast, threads run in parallel
-- Threads can be cancelled. If one thread gets an exception, other threads can be stopped through cancellation.
+- Threads can be cancelled. If one thread gets an exception, other threads can be stopped through cancellation
 
 #### Cons
 
-- More complex. You have to think carefully for cancellation checks and insert where necessary.
+- More complex. You have to think carefully for cancellation checks and insert where necessary
 - Execution order of tasks cannot be known before hand
 
 ## Conclusion
 
-As discussed in the previous sections, keeping builder pattern in an async codebase is difficult. If you are a developer (like me) who thinks builder pattern has a lot of advantages and would like to keep it in your async codebase, then you can adapt one of the solutions discussed here. In all the solutions, exception handling needs careful decisions because you will be handling a lot of threads and correct decisions need to be made incase one of these threads throws an exception.
+As discussed in the previous sections, keeping builder pattern in an async codebase is difficult. If you are a developer (like me) who thinks builder pattern has a lot of advantages and would like to keep it in your async codebase, then you can adapt one of the solutions discussed here. In all of the solutions, exception handling needs careful decisions because you will be handling a lot of threads and correct decisions need to be made in case one of these threads throws an exception.
 
-Please let me know what you think in the comments below. I hope you find this post helpful. An example project related to this topic is available in [blog-code-examples](https://github.com/nerdomancer/blog-code-examples).
+Don't forget that you can also combine one of these solutions with Chain Builders which was mentioned in [my previous blog post.](https://www.selcuksasoglu.com/2018/12/18/builder-pattern-with-mandatory-calls/)
+
+Please let me know what you think in the comments below. I hope you find this post helpful. Example code related to this topic is available in [blog-code-examples](https://github.com/nerdomancer/blog-code-examples) or in the repl.it links that I have provided in previous sections.
 
 Happy coding!
