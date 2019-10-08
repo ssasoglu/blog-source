@@ -167,7 +167,7 @@ You can see where I am trying to go with this. While trying to make the builder 
 
 During my initial research for a solution, [this StackOverflow question](https://stackoverflow.com/questions/25302178/using-async-tasks-with-the-builder-pattern) was the only thing that I could find. I started digging up with this starting point to see my options. In the next section you can see the viable options I could come up with.
 
-### 1- Builder with Parallel Executing Actions
+### 1- Builder with Parallel Executing Tasks
 
 In the most simple solution, we can use a `Queue` to start and keep track of new threads per methods within the builder class. Each method action will be a new `Task` and we can still return `this` from builder methods. With this approach running thread will never be blocked and only `Build()` method will be async.
 
