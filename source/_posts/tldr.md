@@ -1,5 +1,5 @@
 ---
-title: TLDR
+title: "TIL: TLDR"
 date: 2020-05-19 21:48:16
 tags:
 - bash

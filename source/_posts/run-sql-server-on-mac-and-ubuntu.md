@@ -1,5 +1,5 @@
 ---
-title: Run SQL Server on Mac and Ubuntu
+title: "TIL: Run SQL Server on Mac and Ubuntu"
 date: 2020-06-09 22:33:14
 tags:
 - sql

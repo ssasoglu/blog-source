@@ -1,5 +1,5 @@
 ---
-title: SQL Server, Index Fragmentation
+title: "TIL: SQL Server, Index Fragmentation"
 date: 2020-06-11 22:36:46
 tags:
 - sql

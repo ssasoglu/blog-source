@@ -1,5 +1,5 @@
 ---
-title: To/From Base64
+title: "TIL: To/From Base64"
 date: 2020-05-20 21:49:43
 tags:
 - bash

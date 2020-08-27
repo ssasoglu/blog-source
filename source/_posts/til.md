@@ -1,5 +1,5 @@
 ---
-title: TIL
+title: "Introducing New Series: TIL"
 date: 2020-05-19 21:38:43
 tags: 
 - today
@@ -20,12 +20,12 @@ tags:
 - commandline
 ---
 
-# Today I Learned (TIL)
+## Today I Learned (TIL)
 
 I want to start a new series where I want to share with you:
 
-* Tools that I use almost everyday that makes me more productive,
-* Tasks that caused me to scratch my head during the day.
+* Tools that I use almost everyday that make me more productive,
+* Tasks/Challenges that caused me to scratch my head during the day.
 
 I hope they will be helpful to you as well.
 

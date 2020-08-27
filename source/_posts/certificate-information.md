@@ -1,5 +1,5 @@
 ---
-title: Gather Certificate Information
+title: "TIL: Gather Certificate Information"
 date: 2020-05-21 22:18:54
 tags:
 - bash
