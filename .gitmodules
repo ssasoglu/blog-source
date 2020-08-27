@@ -1,0 +1,3 @@
+[submodule "themes/cactus-dark"]
+	path = themes/cactus-dark
+	url = git@github.com:nerdomancer/hexo-theme-cactus.git
