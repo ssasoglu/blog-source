@@ -387,6 +387,6 @@ As discussed in the previous sections, keeping builder pattern in an async codeb
 
 Don't forget that you can also combine one of these solutions with Chain Builders which was mentioned in [my previous blog post.](https://www.selcuksasoglu.com/2018/12/18/builder-pattern-with-mandatory-calls/)
 
-Please let me know what you think in the comments below. I hope you find this post helpful. Example code related to this topic is available in [blog-code-examples](https://github.com/nerdomancer/blog-code-examples) or in the repl.it links that I have provided in previous sections.
+Please let me know what you think in the comments below. I hope you find this post helpful. Example code related to this topic is available in [blog-code-examples](https://github.com/ssasoglu/blog-code-examples) or in the repl.it links that I have provided in previous sections.
 
 Happy coding!

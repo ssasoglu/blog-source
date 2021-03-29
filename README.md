@@ -1,5 +1,3 @@
 # Blog-source
 
-This is the source files for my blog on [http://selcuksasoglu.com](http://selcuksasoglu.com).
-
-You can read how I moved to hexo from my posts.
+This is the source files for my blog on [https://selcuksasoglu.com](https://selcuksasoglu.com).

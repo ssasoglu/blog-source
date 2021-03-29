@@ -78,5 +78,5 @@ theme: cactus-dark
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
   type: git
-  repo: git@github.com:nerdomancer/nerdomancer.github.io.git
+  repo: git@github.com:ssasoglu/ssasoglu.github.io.git
   branch: master

@@ -305,7 +305,7 @@ Creational design patterns are frequently used in almost any code base. Having m
 * Unit testing on the link chain will require more effort
 * Double check would be necessary on IoC container registrations
 
-Please let me know what you think in the comments below. I hope you find this post helpful. An example project related to this topic is available in [blog-code-examples.](https://github.com/nerdomancer/blog-code-examples) Special thanks to my team members who helped me brainstorming and implementation on this topic.
+Please let me know what you think in the comments below. I hope you find this post helpful. An example project related to this topic is available in [blog-code-examples.](https://github.com/ssasoglu/blog-code-examples) Special thanks to my team members who helped me brainstorming and implementation on this topic.
 
 Happy coding!
 
