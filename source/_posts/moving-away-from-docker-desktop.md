@@ -1,5 +1,5 @@
 ---
-title: "Moving away from Docker Desktop and Running docker containers on Minikube"
+title: "Moving Away From Docker Desktop and Running Docker Containers On Minikube"
 date: 2021-11-06 20:52:43
 tags:
 - docker

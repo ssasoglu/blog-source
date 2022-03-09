@@ -36,6 +36,7 @@ Happy coding!
 * [TLDR](../../../05/19/tldr)
 * [To/From Base64](../../../05/20/to-from-base64)
 * [Gather Certificate Information](../../../05/21/certificate-information)
+* [Checking Port Connections on Servers](../../../08/11/nc-servers-port-connection)
 
 ## Azure, Cloud Computing and Azure DevOps
 
