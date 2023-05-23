@@ -11,4 +11,4 @@ I am a software developer living in the Netherlands. I love tinkering in the dig
 
 If you want to get in touch, please reach me through <a class="icon" target="_blank" href="https://tr.linkedin.com/in/ssasoglu"><i class="fab fa-linkedin-in"></i></a>, <a class="icon" target="_blank" href="https://twitter.com/ssasoglu"><i class="fab fa-twitter"></i></a> or <a class="icon" target="_blank" href="https://github.com/ssasoglu"><i class="fab fa-github"></i></a>.
 
-You can download a printer friendly version of my CV from [here.](./Resume_SSasoglu.pdf)
+You can download my CV from [here.](./Resume_SSasoglu.pdf)
