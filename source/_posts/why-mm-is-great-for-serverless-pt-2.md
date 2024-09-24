@@ -5,9 +5,9 @@ date: 2024-09-06 13:55:48
 tags:
 ---
 
-In Part 1, we explored the various platforms at PostNL, including planning, operation execution monitoring, and enabler platforms, each with unique requirements. We discussed different architectural styles—monolithic, fully serverless, and serverless microservices, highlighting their pros and cons. At the end of part one, we introduced the concept of the "Serverless Modular Monolith", setting the stage for a deeper dive in part two. In this part, we will discuss how we are building such systems and the practical benefits they offer. Without further ado, let's start!
+In Part 1, we explored the various applications at PostNL, including planning, operation execution monitoring, and enabler applications, each with unique requirements. We discussed different architectural styles—monolithic, fully serverless, and serverless microservices, highlighting their pros and cons. At the end of part one, we introduced the concept of the "Serverless Modular Monolith", setting the stage for a deeper dive in part two. In this part, we will discuss how we are building such systems and the practical benefits they offer. Without further ado, let's start!
 
-## Serverless Modular Monoliths
+## Serverless Modular Monolith
 
 ![smm](/images/posts/2024/smm.png)
 
@@ -15,15 +15,17 @@ The first question is "How do we build our Serverless Modular Monolith systems?"
 
 "Serverless Modular Monolith" name might not make any sense because how can a system be serverless and a monolith at the same time? It requires some additional context. Please let me explain.
 
-It is easier to explain the concept through an example, so let's consider the following system.
+It is easier to explain the concept through an example, so let's consider the following system:
 
 ![serverless-vs-bbm](/images/posts/2024/example-system.png)
 
-In this imaginary platform, we deploy a single AWS CDK Application which resides in its own GitHub repository.
+In this example system, we deploy a single AWS CDK Application which resides in its own GitHub repository.
 
 ![platform-repo](/images/posts/2024/platform-repo.png)
 
-The main CDK project that is shown in the diagram contains only the scaffolding and orchestration of inner modules. There is no business logic in this repository. The business logic that defines the functionalities of the application is handled by the inner modules, which we will cover later. In essence, the overall system is a single CDK application, hence the "monolith" in the name. Each module within the main CDK application is a dependency and is deployed as a nested Cloudformation stack. The connection between modules and the orchestration of data flow is managed by this CDK application which is where the “modular” aspect comes into play. Note that the entire application is deployed at the same time as a single unit, so it will either succeed or fail altogether. However, after the first deployment, the application behaves more like a microservices architecture: it becomes scalable by default, with isolated modules integrated using AWS capabilities. I will dive into these additional benefits in the next sections.
+The main CDK project that is shown in the diagram contains only the scaffolding and orchestration of inner modules. There is no business logic in this repository. The business logic that defines the functionalities of the application is handled by the inner modules, which we will cover later. In essence, the overall system is a single CDK application, hence the "monolith" in the name.
+
+Each module within the main CDK application is a dependency and is deployed as a nested Cloudformation stack. The connection between modules and the orchestration of data flow is managed by this CDK application which is where the “modular” aspect comes into play. Note that the entire application is deployed at the same time as a single unit, so it will either succeed or fail altogether.
 
 ![orchestration](/images/posts/2024/orchestration.png)
 
@@ -31,32 +33,32 @@ The main CDK project that is shown in the diagram contains only the scaffolding 
 
 The serverless modules are stored in their respective Git repositories, where the final artifact is a library which contains the necessary infrastructure code for the nested AWS CDK Stack.
 
-For isolation between modules, in most cases, we design our modules to consume and publish their data to/from one of the integration services like SNS, SQS, EventBridge or Kinesis.
+For isolation between modules, in most cases, we design our modules to consume and publish their data via AWS integration services like SNS, SQS, EventBridge or Kinesis.
 
-When the development is complete and the module is ready for a release, we create a Typescript library using the AWS CDK infrastructure code. The library is versioned and stored in our package manager with a release version. Later, the main CDK application will add this module as a dependency using this library version.
+Once development is complete and the module is ready for release, we create a TypeScript library using the AWS CDK infrastructure code. This library is versioned and stored in our package manager, ready for integration into the main CDK application. The main CDK application will then add the module as a dependency by referencing this library version.
 
 ![module](/images/posts/2024/module.png)
 
-The main CDK application has dependencies on all the modules with versioning, manages the connections between these modules, and determines the data flow by connecting the necessary integration services between the modules. In some cases, key integration services or components like an EventBus on the EventBridge can be created by the main application and connect the correct modules to establish the producer/consumer relation.
+The main CDK application has dependencies on all the modules with versioning, manages the connections between these modules, and determines the data flow by connecting the necessary integration services between the modules. In some cases, key integration services or components like an EventBus on the EventBridge can be created by the main application and connect the modules to establish the producer/consumer relation.
 
-Connections among the modules also determines the order of deployment for the modules. Luckily, we do not have think about it or manage it ourselves, and this is one of the _core competencies of "Serverless Modular Monoliths"_. AWS CDK manages these dependencies for us during the deployments and manages the correct order of deployment among the modules. This aspect alone saves significant amount of time for complex systems.
+Module connections also determine the order of deployment. Fortunately, we do not have think about it or manage it ourselves, and this is one of the _core competencies of "Serverless Modular Monoliths"_. AWS CDK manages these dependencies during the deployments and deploys the modules in the correct order. This aspect alone saves significant amount of time for complex systems.
 
-Once the CDK app is successfully deployed, each module can work in isolation thanks to the integration services in between (SNS, SQS, EventBridge, Kinesis ... etc.). From that point on the modules will scale up and down automatically, behaving similarly to microservices.
+Once the CDK app is successfully deployed, each module can work in isolation thanks to the integration services in between (SNS, SQS, EventBridge, Kinesis ... etc.). From that point forward, the modules will scale up and down automatically, behaving similarly to microservices.
 
-After the first deployment, AWS CDK will make comparisons to the existing application with all its modules and compare the state before making changes to the infrastructure and it is smart only to update the parts that we have updated. In most of the cases, this state transition is invisible to us and we don't need think or plan for it. AWS CDK will create new resources and replace the old ones without interrupting the running services. As a rule of thumb, we should be careful about changes in data persistence, but this is topic too far detailed and needs to be discussed separately than this post.
+After the first deployment, AWS CDK will make comparisons to the existing application with all its modules and compare the state before making changes to the infrastructure and it is smart only to update the parts that we have updated. In most of the cases, this state transition is seamless and does not require manual planning. AWS CDK will create new resources and replace the old ones without interrupting the running services. As a rule of thumb, we should be careful about changes in data persistence, but this is topic too far detailed and needs to be discussed separately than this post.
 
 As a recap, here are the list of best practices that we follow while building these so-called “Modules”:
 
 - **Single Responsibility:** Each module has a single responsibility and is isolated from any other module.
-- **Isolation and Testing:** Modules can be deployed individually for testing purposes, allowing extensive integration tests to validate behavior before they are plugged into the platform.
+- **Isolation and Testing:** Modules can be deployed individually for testing purposes, allowing extensive integration tests to validate behavior before they are plugged into the main application.
 - **Versioning:** Each module is versioned so its development can progress independently of other modules.
-- **Scalability:** Modules scale up and down depending on the hot-spots within the platform, thanks to their independence and connection through integration services.
+- **Scalability:** Modules scale up and down depending on the hot-spots within the applications, thanks to their independence and connection through integration services.
 - **Cost Efficiency:** We can tag each module to track individual costs and improve cost efficiency if necessary.
 - **Logical Boundaries:** Modules have logical boundaries, which, combined with their single responsibility, make the overall system easy to reason with. This approach ensures a good developer experience and low cognitive load during development.
 
 ### Practical Benefits in Action
 
-There are a number of additional benefits of using "Serverless Modular Monolith". In the following list, I would like to summarise the ones that we use a lot:
+There are a number of practical benefits of using "Serverless Modular Monolith". In the following list, I would like to summarize the ones that we use a lot:
 
 - Smooth version migrations with backward compatibility
 - Side-cars,
@@ -72,8 +74,10 @@ In a "Serverless Modular Monolith" architecture, we have the possibility to depl
 
 ![versioning-1](/images/posts/2024/versioning-1.png)
 
-When we select one of the above approaches and deploy two versions, we can run them together until we are ready to phase out v1.
-Phase out criteria might depend on the situation. Some possible scenarios could be for example until the cache of the new version catches up with the old one, or if this was an outlet module where other teams were dependent on your system, we can wait until all teams migrate to v2.
+When we select one of the above approaches and deploy two versions, we can run them together until we are ready to phase out v1. Phase out criteria might depend on the situation. Some possible scenarios could be:
+
+- Until the cache of the new version catches up with the old one.
+- If this was an outlet module where other teams were dependent on your system, we can wait until all teams migrate to v2.
 
 ![versioning-2](/images/posts/2024/versioning-2.png)
 
@@ -109,13 +113,13 @@ We have covered the following benefits of the "Serverless Modular Monolith":
   - Less cognitive load for developers and easy to reason with the overall system.
   - Loose coupling, high functional cohesion
 
-- AWS CDK simplifies the platform deployment to a single command: `cdk deploy` and handles complex dependency management, especially during early development phase.
+- AWS CDK simplifies the application deployment to a single command: `cdk deploy` and handles complex dependency management, especially during early development phase.
   - We do not need to think about deployment strategies right from the start.
   - Only the first deployment is a monolith, after that in each deployment AWS CDK is smart enough to only reflect the changes or add the new components.
 
 - The architecture style provides a balance between exploration and exploitation.
   - If we need something fast, we can reuse what we have built so far.
-  - If we need to experiment, it is easy to plug in new features to the platform.
+  - If we need to experiment, it is easy to plug in new features to the application.
 
 If you don't have a plan for how your system will evolve, it won't survive the test of time. Starting with a serverless modular monolithic architecture gives you a solid  and flexible foundation that supports growth and evolution for your systems.
 
