@@ -2,16 +2,18 @@
 title: >-
   Why Modular Monolith is a great starting architecture for a serverless application (Part 2)
 date: 2024-09-06 13:55:48
-tags:
+tags: #serverless #modular-monolith #aws-cdk #aws
 ---
 
-In Part 1, we explored the various applications at PostNL, including planning, operation execution monitoring, and enabler applications, each with unique requirements. We discussed different architectural styles—monolithic, fully serverless, and serverless microservices, highlighting their pros and cons. At the end of part one, we introduced the concept of the "Serverless Modular Monolith", setting the stage for a deeper dive in part two. In this part, we will discuss how we are building such systems and the practical benefits they offer. Without further ado, let's start!
+![mm-series](/images/posts/2024/why_mm_cover_2.jpg)
+
+In [Part 1](./why-mm-is-great-for-serverless-pt-1.md), we explored the various applications at PostNL, including planning, operation execution monitoring, and enabler applications, each with unique requirements. We discussed different architectural styles: Monolithic, fully serverless, and serverless microservices, highlighting their pros and cons. At the end of part one, we introduced the concept of the "Serverless Modular Monolith", setting the stage for a deeper dive in part two. In this part, we will discuss how we are building such systems and the practical benefits they offer. Without further ado, let's start!
 
 ## Serverless Modular Monolith
 
 ![smm](/images/posts/2024/smm.png)
 
-The first question is "How do we build our Serverless Modular Monolith systems?"
+The first question is "How do we build our "Serverless Modular Monolith" systems?"
 
 "Serverless Modular Monolith" name might not make any sense because how can a system be serverless and a monolith at the same time? It requires some additional context. Please let me explain.
 
@@ -41,7 +43,7 @@ Once development is complete and the module is ready for release, we create a Ty
 
 The main CDK application has dependencies on all the modules with versioning, manages the connections between these modules, and determines the data flow by connecting the necessary integration services between the modules. In some cases, key integration services or components like an EventBus on the EventBridge can be created by the main application and connect the modules to establish the producer/consumer relation.
 
-Module connections also determine the order of deployment. Fortunately, we do not have think about it or manage it ourselves, and this is one of the _core competencies of "Serverless Modular Monoliths"_. AWS CDK manages these dependencies during the deployments and deploys the modules in the correct order. This aspect alone saves significant amount of time for complex systems.
+Module connections also determine the order of deployment. Fortunately, we do not have think about it or manage it ourselves, and this is one of the _core competencies of "Serverless Modular Monolith"s_. AWS CDK manages these dependencies during the deployments and deploys the modules in the correct order. This aspect alone saves significant amount of time for complex systems.
 
 Once the CDK app is successfully deployed, each module can work in isolation thanks to the integration services in between (SNS, SQS, EventBridge, Kinesis ... etc.). From that point forward, the modules will scale up and down automatically, behaving similarly to microservices.
 
@@ -56,6 +58,14 @@ As a recap, here are the list of best practices that we follow while building th
 - **Cost Efficiency:** We can tag each module to track individual costs and improve cost efficiency if necessary.
 - **Logical Boundaries:** Modules have logical boundaries, which, combined with their single responsibility, make the overall system easy to reason with. This approach ensures a good developer experience and low cognitive load during development.
 
+### Distinction between Modules and Microservices
+
+Modules and microservices differ on multiple aspects, but here are the key ones from my perspective:
+
+- **Deployment:** Modules are deployed as nested CDK stacks within the main CDK application, while microservices are deployed as separate AWS CDK applications. Therefore, microservices require complex deployment orchestration and strategies. Developers are responsible for managing the dependencies between microservices.
+- **Versioning & Updates:** Updates in microservices require careful coordination between services for breaking changes and additional testing is necessary on overall system level to make sure that the changes are compatible. The same is also true for modules, but the effort is much lower, because overall system is deployed as a single unit.
+- **Integration:** Changes in bounded contexts are more complex to manage in microservices and getting them right requires a good understanding of the overall system. When bounded contexts are not right, we will be risking difficult challenges like ["Distributed Transactions"](https://en.wikipedia.org/wiki/Distributed_transaction).
+
 ### Practical Benefits in Action
 
 There are a number of practical benefits of using "Serverless Modular Monolith". In the following list, I would like to summarize the ones that we use a lot:
@@ -66,7 +76,8 @@ There are a number of practical benefits of using "Serverless Modular Monolith".
 
 #### Version migrations
 
-In this first scenario, let's assume that we have been running the Rollcage-Processing-Module in v1 for some time and we are now ready to deploy v2.
+In this first scenario, let's assume that we have been running the Rollcage-Processing-Module in v1 for some time and we are now ready to deploy v2. In the following figures, other modules are not shown for simplicity.
+
 In a "Serverless Modular Monolith" architecture, we have the possibility to deploy two versions of the same module. There are multiple ways to achieve that, but here are the first two approaches that comes to mind:
 
 - Make a name change in the library and deploy it like a new module along with the previous version. (Like Rollcage-Processing-Module-v2)
@@ -83,11 +94,13 @@ When we select one of the above approaches and deploy two versions, we can run t
 
 Once the phase out requirements are met, we can decommission v1 and continue our development through v2.
 
-This approach will ensure backward compatibility during the entire process and allows stakeholders to catch up at their own pace using communicated sunset dates for older versions.
+This approach ensures backward compatibility during the entire process and allows stakeholders to catch up at their own pace using communicated sunset dates for older versions.
 
 #### Side-cars
 
-Another possibility is to add a side-car module. This pattern is named “Side-car” because it resembles a side-car attached to a motorcycle. In this pattern, the side-car is attached to a parent application and provides supporting features for the application. This allows us to decompose some features into a separate module.
+Another possibility is to add a [side-car](https://learn.microsoft.com/en-us/azure/architecture/patterns/sidecar) module. This pattern is named “Side-car” because it resembles a side-car attached to a motorcycle. In this pattern, the side-car is attached to a parent application and provides supporting features for the application. This allows us to decompose some features into a separate module. A sample use case could be as follows:
+
+A module for processing incoming events is required to store the last 60 days of events in storage. In this use case, the persistence responsibility can be offloaded to a side car which keeps the business logic in processing module simple.
 
 ![side-car](/images/posts/2024/sidecar.png)
 
@@ -99,21 +112,21 @@ The "Serverless Modular Monolith" architecture also makes A-B testing straightfo
 
 ## Evolving Towards Microservices
 
-As our applications grow, there's always the potential to evolve them into fully distributed microservices. By carefully managing the bounded contexts within our applications, we can split a modular monolithic system into multiple microservices, each with its own AWS account. Architecture remains flexible and scalable as we continue to grow.
+As our applications grow, there's always the potential to evolve them into fully distributed microservices. By carefully managing the bounded contexts within our applications, we can split a modular monolithic system into multiple microservices, each with its own AWS account. We can also assign responsibility to multiple teams and manage complexity effectively.
 
-The ability to evolve from a modular monolith to microservices without a complete architectural overhaul is one of the key benefits of the Serverless Modular Monolith. This approach allows us to balance the need for stability with the flexibility to adapt and grow.
+The ability to evolve from a modular monolith to microservices without a complete architectural overhaul is one of the key benefits of the "Serverless Modular Monolith". This approach allows us to find the balance between stability and flexibility so that we can continue to adapt and grow.
 
 ## Recap and Conclusions
 
-Throughout the series, we’ve explored the advantages of the Serverless Modular Monolith and how it can address the evolving needs of modern applications. By balancing simplicity, scalability, and adaptability, this architecture enables us to start small, evolve incrementally, and manage complexity effectively.
+Throughout the series, we’ve explored the advantages of the "Serverless Modular Monolith" and how it can address the evolving needs of modern applications. By balancing simplicity, scalability, and adaptability, this architecture enables us to start small, evolve incrementally, and manage complexity effectively.
 
 We have covered the following benefits of the "Serverless Modular Monolith":
 
-- Modular design mitigates common challenges and opens possibility to evolve towards microservices without complete overhaul of the system
+- Modular design mitigates common challenges and opens possibility to evolve towards microservices without complete overhaul of the system:
   - Less cognitive load for developers and easy to reason with the overall system.
   - Loose coupling, high functional cohesion
 
-- AWS CDK simplifies the application deployment to a single command: `cdk deploy` and handles complex dependency management, especially during early development phase.
+- AWS CDK simplifies the application deployment to a single command: `cdk deploy` and handles complex deployment orchestration, especially during early development phase.
   - We do not need to think about deployment strategies right from the start.
   - Only the first deployment is a monolith, after that in each deployment AWS CDK is smart enough to only reflect the changes or add the new components.
 
@@ -121,7 +134,7 @@ We have covered the following benefits of the "Serverless Modular Monolith":
   - If we need something fast, we can reuse what we have built so far.
   - If we need to experiment, it is easy to plug in new features to the application.
 
-If you don't have a plan for how your system will evolve, it won't survive the test of time. Starting with a serverless modular monolithic architecture gives you a solid  and flexible foundation that supports growth and evolution for your systems.
+If you don't have a plan for how your system will evolve, it won't survive the test of time. Starting with the "Serverless Modular Monolith" gives you a solid and flexible foundation that supports growth and evolution for your systems.
 
 This blueprint has helped us at PostNL, and I hope it can serve as inspiration for you as well. If this architectural evolution is interesting for you, I encourage you to explore the concept "Evolutionary Architectures".
 
