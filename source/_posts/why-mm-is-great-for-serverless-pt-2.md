@@ -7,7 +7,7 @@ tags: #serverless #modular-monolith #aws-cdk #aws
 
 ![mm-series](/images/posts/2024/why_mm_cover_2.jpg)
 
-In [Part 1](./why-mm-is-great-for-serverless-pt-1.md), we explored the various applications at PostNL, including planning, operation execution monitoring, and enabler applications, each with unique requirements. We discussed different architectural styles: Monolithic, fully serverless, and serverless microservices, highlighting their pros and cons. At the end of part one, we introduced the concept of the "Serverless Modular Monolith", setting the stage for a deeper dive in part two. In this part, we will discuss how we are building such systems and the practical benefits they offer. Without further ado, let's start!
+In [Part 1](../why-mm-is-great-for-serverless-pt-1), we explored the various applications at PostNL, including planning, operation execution monitoring, and enabler applications, each with unique requirements. We discussed different architectural styles: Monolithic, fully serverless, and serverless microservices, highlighting their pros and cons. At the end of part one, we introduced the concept of the "Serverless Modular Monolith", setting the stage for a deeper dive in part two. In this part, we will discuss how we are building such systems and the practical benefits they offer. Without further ado, let's start!
 
 ## Serverless Modular Monolith
 

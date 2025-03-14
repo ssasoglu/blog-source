@@ -11,8 +11,8 @@ At PostNL, our ambition to become the leading postal tech company continues at f
 
 This post will be a two part series:
 
-- [Part 1](./why-mm-is-great-for-serverless-pt-1.md): We will explore the various serverless applications at PostNL, including planning, operation execution monitoring, and enabler applications, each with unique requirements. We will discuss different architectural styles: monolithic, fully serverless, and serverless microservices, highlighting their pros and cons. Finally, we will introduce the concept of "Serverless Modular Monoliths".
-- [Part 2](./why-mm-is-great-for-serverless-pt-2.md): We will discuss how we are building "Serverless Modular Monoliths" and the practical benefits they offer. Finally, we will conclude the series with a recap.
+- [Part 1](../why-mm-is-great-for-serverless-pt-1): We will explore the various serverless applications at PostNL, including planning, operation execution monitoring, and enabler applications, each with unique requirements. We will discuss different architectural styles: monolithic, fully serverless, and serverless microservices, highlighting their pros and cons. Finally, we will introduce the concept of "Serverless Modular Monoliths".
+- [Part 2](../why-mm-is-great-for-serverless-pt-2): We will discuss how we are building "Serverless Modular Monoliths" and the practical benefits they offer. Finally, we will conclude the series with a recap.
 
 ## The Challenge of Delivering at Scale
 
@@ -26,7 +26,7 @@ To deliver your parcels as quickly and as efficiently as possible, a lot of prep
 
 2. **Operation Execution Monitoring Applications:** These applications handle real-time data, ensuring that daily operations run smoothly. They are designed to be responsive to the constant flow of information coming in from the field. This includes tracking the number of parcels arriving at sorting centers and monitoring for any operational anomalies. As these applications must process large amounts of data in near real-time, they have medium compute and scaling needs, balancing latency and cost with the ability to scale up as necessary.
 
-3. **Enabler and Integration Applications:** Systems like our [IoT-Platform](./iot-thing-availability-at-scale-in-PostNL.md) fall into this category. They process massive amounts of data, with scaling needs that are through the roof. At the time of writing this blog post, our IoT-Platform processes close to 3 billion events daily, tracking assets across the Benelux area. These applications either generate raw data or enhance and facilitate its flow, ensuring that consumer applications can effectively process the information. So performance and scalability are of the sole foundation of these kind of applications.
+3. **Enabler and Integration Applications:** Systems like our [IoT-Platform](https://www.selcuksasoglu.com/2023/05/15/iot-thing-availability-at-scale-in-PostNL/) fall into this category. They process massive amounts of data, with scaling needs that are through the roof. At the time of writing this blog post, our IoT-Platform processes close to 3 billion events daily, tracking assets across the Benelux area. These applications either generate raw data or enhance and facilitate its flow, ensuring that consumer applications can effectively process the information. So performance and scalability are of the sole foundation of these kind of applications.
 
 Some of these applications are using a specific type of systems architecture called "Serverless Modular Monolith" that exploits the scalability and simplicity of serverless together with a modular monolith approach, which makes deployments and maintenance easier. As you can see from the above overview, "Serverless Modular Monolith" has been a good fit for various types of applications in PostNL, even though there are different compute and scaling needs per application. This is mainly due to the underlying concepts in "Serverless Modular Monolith" because it can adapt and evolve depending on the needs of the application. We will mention these concepts in the later sections of this series. Before diving into details, let's explore why we chose "Serverless Modular Monolith" from evolution perspective.
 
@@ -86,6 +86,6 @@ All these require additional complexity to manage where some of them could have 
 
 Isn't there a better way to experiment with the bounded contexts from a single AWS CDK App? That would make deployment orchestration so much easier and we can move resources around until we are confident with the bounded context. We know from experience that AWS CDK can handle extremely complex deployments.
 
-The answer is "Yes!", there is a way to achieve that. With "Serverless Modular Monoliths". In [Part 2](./why-mm-is-great-for-serverless-pt-2.md) of this series, we’ll dive deeper into the specifics of how we build "Serverless Modular Monoliths" in PostNL.
+The answer is "Yes!", there is a way to achieve that. With "Serverless Modular Monoliths". In [Part 2](../why-mm-is-great-for-serverless-pt-2) of this series, we’ll dive deeper into the specifics of how we build "Serverless Modular Monoliths" in PostNL.
 
 Stay tuned for a closer look. Until then, happy coding!
