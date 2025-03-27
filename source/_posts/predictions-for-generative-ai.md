@@ -8,6 +8,8 @@ tags:
 - cursor
 ---
 
+![ai](../images/posts/2025/ai.jpg)
+
 Like any other tech company, we are also discussing how we can utilize Generative-AI to its full extent in my current company as well. And we should! Because AI is changing the world in the ways that we wouldn't be able to dream of at all. A lot of jobs are becoming obsolete and many new professions are emerging. This is not news to me, it is the cycle of innovation.
 
 When the [industrial age](https://en.wikipedia.org/wiki/Industrial_Age) first came, a lot of relevant jobs of that time became obsolete. At the same time, a number of new professions emerged. We started to manufacture faster and more efficiently. The current ~hype of~ Generative-AI in the [information age](https://en.wikipedia.org/wiki/Information_Age) resembles a similar situation to me, at least for now.
